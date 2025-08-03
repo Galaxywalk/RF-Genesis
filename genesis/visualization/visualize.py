@@ -57,7 +57,7 @@ def display_smpl(
     ax.set_ylim(-0.5, 2)
     ax.set_zlim(-1, 3)
     ax.view_init(azim=-90, elev=100)
-    ax.view_init(azim=30, elev=30, roll = 105)
+    ax.view_init(azim=30, elev=30, roll=105)
     ax.set_title('SMPL model', fontsize=20)
     # fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
     return ax
@@ -152,8 +152,14 @@ def draw_combined(i,pointcloud_cfg,radar_frames,pointclouds,smpl_data):
 
     plt.tight_layout()
     fig.canvas.draw()
-    data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+    
+    # Use modern matplotlib method for getting canvas data
+    buf = fig.canvas.buffer_rgba()
+    data = np.asarray(buf)
+    # Convert RGBA to RGB by removing alpha channel
+    data = data[:, :, :3]
     data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+    
     plt.close(fig) 
     return data
 
